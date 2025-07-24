@@ -11,14 +11,22 @@ export const StudentRouter = ({ logout }) => {
   return (
     <div className="App">
       <BrowserRouter>
+        <nav>
+          <Link to="/">Home</Link> |
+          <Link to="enroll">Add/Drop Courses</Link> |
+          <Link to="schedule">My Schedule</Link> |
+          <Link to="transcript">Transcript</Link> |
+          <Link to="logout">Logout</Link>
+        </nav>
         <Routes>
-          <Route path="/" element={<StudentLayout />}>
-            <Route index element={<StudentHome />} />
-            <Route path="studentAssignments" element={<AssignmentsStudentView />} />
-            <Route path="schedule" element={<ScheduleView />} />
-            <Route path="addCourse" element={<CourseEnroll />} />
-            <Route path="transcript" element={<Transcript />} />
-            <Route path="logout" element={<Logout logout={logout} />} />
+          <Route path="/" element={<StudentLayout/>}>
+            <Route index element={<StudentHome/>}/>
+            <Route path="studentAssignments"
+                   element={<AssignmentsStudentView/>}/>
+            <Route path="schedule" element={<ScheduleView/>}/>
+            <Route path="addCourse" element={<CourseEnroll/>}/>
+            <Route path="transcript" element={<Transcript/>}/>
+            <Route path="logout" element={<Logout logout={logout}/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
@@ -28,17 +36,17 @@ export const StudentRouter = ({ logout }) => {
 
 export const StudentHome = () => {
   return (
-    <div>
-      <h1>Student Home</h1>
-    </div>
+      <div>
+        <h1>Student Home</h1>
+      </div>
   );
 };
 
 export const StudentLayout = () => {
   return (
-    <>
-      <nav>
-        <Link to="/">Home</Link> &nbsp;|&nbsp;
+      <>
+        <nav>
+          <Link to="/">Home</Link> &nbsp;|&nbsp;
         <Link id="scheduleLink" to="/schedule">View Class Schedule</Link>&nbsp;|&nbsp;
         <Link id="addCourseLink" to="/addCourse">Enroll in a class</Link>&nbsp;|&nbsp;
         <Link id="viewAssignmentsLink" to="/studentAssignments">View Assignments</Link>&nbsp;|&nbsp;
