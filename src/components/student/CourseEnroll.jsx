@@ -116,6 +116,6 @@ const CourseEnroll = (props) => {
 
     </div>
   );
-}
+};
 
 export default CourseEnroll;

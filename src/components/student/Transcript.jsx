@@ -39,14 +39,33 @@ const Transcript = () => {
   const headers = ['Year', 'Semester', 'CourseId', 'Section', 'Title', 'Credits', 'Grade'];
 
   return (
-    <>
+    <div>
       <h3>Transcript</h3>
       <p>To be implemented.  Display a table showing the course a student has taken.
         The table columns are given in headers.
       </p>
+      <Messages response={message} />
+      <table>
+        <thead>
+        <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
+        </thead>
+        <tbody>
+        {courses.map(c => (
+            <tr key={c.enrollmentId || c.courseId}>
+              <td>{c.year}</td>
+              <td>{c.semester}</td>
+              <td>{c.courseId}</td>
+              <td>{c.section}</td>
+              <td>{c.title}</td>
+              <td>{c.credits}</td>
+              <td>{c.grade}</td>
+            </tr>
+        ))}
+        </tbody>
+      </table>
 
-    </>
+    </div>
   );
-}
+};
 
 export default Transcript;
