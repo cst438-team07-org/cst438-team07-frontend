@@ -79,8 +79,8 @@ const ScheduleView = () => {
   const headings = ["enrollmentId", "secNo", "courseId", "secId", "building", "room", "times", ""];
 
   return (
-      <div>
-        <Messages response={message}/>
+      <div className="p-6 singleCol">
+        <Messages response={message} className="errorMessage mb-4"/>
         <SelectTerm buttonText="Get Schedule" onClick={prefetchEnrollments}/>
         <p>To be implemented. Display a table with the sections the student is
           enrolled in for the given term.
@@ -90,21 +90,21 @@ const ScheduleView = () => {
           Confirm that the user wants to drop before doing the REST delete
           request.
         </p>
-        <table>
+        <table className="bg-white shadow-md rounded-lg overflow-hidden w-full">
           <thead>
-          <tr>{headings.map(h => <th key={h}>{h}</th>)}</tr>
+          <tr className="bg-blue-100">{headings.map(h => <th key={h}>{h}</th>)}</tr>
           </thead>
           <tbody>
           {enrollments.map(e => (
-              <tr key={e.enrollmentId}>
-                <td>{e.enrollmentId}</td>
-                <td>{e.secNo}</td>
-                <td>{e.courseId}</td>
-                <td>{e.secId}</td>
-                <td>{e.building}</td>
-                <td>{e.room}</td>
-                <td>{e.times}</td>
-                <td>
+              <tr key={e.enrollmentId} className="hover:bg-gray-50">
+                <td className="p-2">{e.enrollmentId}</td>
+                <td className="p-2">{e.secNo}</td>
+                <td className="p-2">{e.courseId}</td>
+                <td className="p-2">{e.secId}</td>
+                <td className="p-2">{e.building}</td>
+                <td className="p-2">{e.room}</td>
+                <td className="p-2">{e.times}</td>
+                <td className="p-2">
                   <button onClick={() => confirmDrop(e)}>Drop</button>
                 </td>
               </tr>
