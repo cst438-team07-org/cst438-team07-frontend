@@ -82,9 +82,9 @@ const CourseEnroll = (props) => {
   const headers = ['section No', 'year', 'semester', 'course Id', 'section', 'title', 'building', 'room', 'times', 'instructor', ''];
 
   return (
-    <div>
+    <div className= "p-6 singleCol">
       <Messages response={message} />
-      <h3>Open Sections Available for Enrollment</h3>
+      <h3 className="text-2xl font-bold mb-4">Open Sections Available for Enrollment</h3>
       <p>To be implemented. Display a table of sections that are open for enrollment with columns in headers.
         The last column is an "Add" button that when clicked will first confirm that user want to add
         the course, then adds the course to the students schedule.
@@ -97,18 +97,18 @@ const CourseEnroll = (props) => {
         </thead>
         <tbody>
         {sections.map(sec => (
-            <tr key={sec.id}>
-              <td>{sec.sectionNo || sec.id}</td>
-              <td>{sec.year}</td>
-              <td>{sec.semester}</td>
-              <td>{sec.courseId}</td>
-              <td>{sec.section}</td>
-              <td>{sec.title}</td>
-              <td>{sec.building}</td>
-              <td>{sec.room}</td>
-              <td>{sec.times}</td>
-              <td>{sec.instructor}</td>
-              <td><button onClick={() => confirmAdd(sec)}>Add</button></td>
+            <tr key={sec.id} className="hover:bg-gray-50">
+              <td className="p-2">{sec.sectionNo || sec.id}</td>
+              <td className="p-2">{sec.year}</td>
+              <td className="p-2">{sec.semester}</td>
+              <td className="p-2">{sec.courseId}</td>
+              <td className="p-2">{sec.section}</td>
+              <td className="p-2">{sec.title}</td>
+              <td className="p-2">{sec.building}</td>
+              <td className="p-2">{sec.room}</td>
+              <td className="p-2">{sec.times}</td>
+              <td className="p-2">{sec.instructor}</td>
+              <td className="p-2"><button onClick={() => confirmAdd(sec)}>Add</button></td>
             </tr>
         ))}
         </tbody>
