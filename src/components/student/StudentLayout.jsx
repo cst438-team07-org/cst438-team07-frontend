@@ -11,12 +11,12 @@ export const StudentRouter = ({ logout }) => {
   return (
     <div className="App">
       <BrowserRouter>
-        <nav>
-          <Link to="/">Home</Link> |
-          <Link to="enroll">Add/Drop Courses</Link> |
-          <Link to="schedule">My Schedule</Link> |
-          <Link to="transcript">Transcript</Link> |
-          <Link to="logout">Logout</Link>
+        <nav className="bg-blue-200 p-4 mb-4">
+          <Link to="/" className="mr-4 font-medium hover:text-blue-800">Home</Link> |
+          <Link to="enroll" className="mr-4 font-medium hover:text-blue-800">Add/Drop Courses</Link> |
+          <Link to="schedule" className="mr-4 font-medium hover:text-blue-800">My Schedule</Link> |
+          <Link to="transcript" className="mr-4 font-medium hover:text-blue-800">Transcript</Link> |
+          <Link to="logout" className="mr-4 font-medium hover:text-blue-600">Logout</Link>
         </nav>
         <Routes>
           <Route path="/" element={<StudentLayout/>}>
@@ -45,13 +45,13 @@ export const StudentHome = () => {
 export const StudentLayout = () => {
   return (
       <>
-        <nav>
-          <Link to="/">Home</Link> &nbsp;|&nbsp;
-        <Link id="scheduleLink" to="/schedule">View Class Schedule</Link>&nbsp;|&nbsp;
-        <Link id="addCourseLink" to="/addCourse">Enroll in a class</Link>&nbsp;|&nbsp;
-        <Link id="viewAssignmentsLink" to="/studentAssignments">View Assignments</Link>&nbsp;|&nbsp;
-        <Link id="transcriptLink" to="/transcript">View Transcript</Link>&nbsp;|&nbsp;
-        <Link id="logoutLink" to="/logout">Logout</Link>
+        <nav className="bg-blue-200 p-4 mb-4">
+          <Link to="/" className="mr-4 font-medium hover:text-blue-800">Home</Link> &nbsp;|&nbsp;
+        <Link id="scheduleLink" to="/schedule" className="mr-4 font-medium hover:text-blue-800">View Class Schedule</Link>&nbsp;|&nbsp;
+        <Link id="addCourseLink" to="/addCourse" className="mr-4 font-medium hover:text-blue-800">Enroll in a class</Link>&nbsp;|&nbsp;
+        <Link id="viewAssignmentsLink" to="/studentAssignments" className="mr-4 font-medium hover:text-blue-800">View Assignments</Link>&nbsp;|&nbsp;
+        <Link id="transcriptLink" to="/transcript" className="mr-4 font-medium hover:text-blue-800">View Transcript</Link>&nbsp;|&nbsp;
+        <Link id="logoutLink" to="/logout" className="font-medium hover:text-red-600">Logout</Link>
       </nav>
       <Outlet />
     </>

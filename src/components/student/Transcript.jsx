@@ -39,26 +39,26 @@ const Transcript = () => {
   const headers = ['Year', 'Semester', 'CourseId', 'Section', 'Title', 'Credits', 'Grade'];
 
   return (
-    <div>
-      <h3>Transcript</h3>
+    <div className="p-6 singleCol">
+      <h3 className="text-2xl font-bold mb-4">Transcript</h3>
       <p>To be implemented.  Display a table showing the course a student has taken.
         The table columns are given in headers.
       </p>
       <Messages response={message} />
-      <table>
+      <table className="bg-white shadow-md rounded-lg overflow-hidden w-full">
         <thead>
-        <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
+        <tr className="bg-blue-100">{headers.map(h => <th key={h}>{h}</th>)}</tr>
         </thead>
         <tbody>
         {courses.map(c => (
-            <tr key={c.enrollmentId || c.courseId}>
-              <td>{c.year}</td>
-              <td>{c.semester}</td>
-              <td>{c.courseId}</td>
-              <td>{c.section}</td>
-              <td>{c.title}</td>
-              <td>{c.credits}</td>
-              <td>{c.grade}</td>
+            <tr key={c.enrollmentId || c.courseId} className="hover:bg-gray-50">
+              <td className="p-2">{c.year}</td>
+              <td className="p-2">{c.semester}</td>
+              <td className="p-2">{c.courseId}</td>
+              <td className="p-2">{c.section}</td>
+              <td className="p-2">{c.title}</td>
+              <td className="p-2">{c.credits}</td>
+              <td className="p-2">{c.grade}</td>
             </tr>
         ))}
         </tbody>
