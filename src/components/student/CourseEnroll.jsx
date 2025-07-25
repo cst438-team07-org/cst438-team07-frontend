@@ -3,7 +3,7 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { REGISTRAR_URL } from '../../Constants';
 import Messages from '../Messages';
-import SelectTerm from "../../SelectTerm";
+import SelectTerm from "../SelectTerm";
 
 const CourseEnroll = (props) => {
 
