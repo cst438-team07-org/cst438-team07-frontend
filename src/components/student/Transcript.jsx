@@ -41,9 +41,6 @@ const Transcript = () => {
   return (
     <div className="p-6 singleCol">
       <h3 className="text-2xl font-bold mb-4">Transcript</h3>
-      <p>To be implemented.  Display a table showing the course a student has taken.
-        The table columns are given in headers.
-      </p>
       <Messages response={message} />
       <table className="bg-white shadow-md rounded-lg overflow-hidden w-full">
         <thead>

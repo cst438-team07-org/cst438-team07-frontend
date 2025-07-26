@@ -85,10 +85,6 @@ const CourseEnroll = (props) => {
     <div className= "p-6 singleCol">
       <Messages response={message} />
       <h3 className="text-2xl font-bold mb-4">Open Sections Available for Enrollment</h3>
-      <p>To be implemented. Display a table of sections that are open for enrollment with columns in headers.
-        The last column is an "Add" button that when clicked will first confirm that user want to add
-        the course, then adds the course to the students schedule.
-      </p>
       <SelectTerm onTermSelect={({ year, semester }) => { setYear(year); setSemester(semester); }} />
       <Messages response={message} />
       <table>

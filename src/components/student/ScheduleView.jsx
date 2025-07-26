@@ -82,14 +82,6 @@ const ScheduleView = () => {
       <div className="p-6 singleCol">
         <Messages response={message} className="errorMessage mb-4"/>
         <SelectTerm buttonText="Get Schedule" onClick={prefetchEnrollments}/>
-        <p>To be implemented. Display a table with the sections the student is
-          enrolled in for the given term.
-          For each section, display the columns as given in headings.
-          For each table row, a Drop button will allow the student to drop the
-          section.
-          Confirm that the user wants to drop before doing the REST delete
-          request.
-        </p>
         <table className="bg-white shadow-md rounded-lg overflow-hidden w-full">
           <thead>
           <tr className="bg-blue-100">{headings.map(h => <th key={h}>{h}</th>)}</tr>
