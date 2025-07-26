@@ -83,28 +83,25 @@ const CourseEnroll = (props) => {
 
   return (
     <div className= "p-6 singleCol">
-      <Messages response={message} />
-      <h3 className="text-2xl font-bold mb-4">Open Sections Available for Enrollment</h3>
-      <SelectTerm onTermSelect={({ year, semester }) => { setYear(year); setSemester(semester); }} />
-      <Messages response={message} />
-      <table>
+       <h3 className='text-2xl font-semibold mb-4 text-center'>Open Sections Available for Enrollment</h3>
+      <SelectTerm onTermSelect={({year,semester})=>{setYear(year);setSemester(semester)}} buttonText='Get Sections'/>
+      {message && <Messages response={message} className='text-red-600 font-bold mb-4' />}
+      <table className='table-auto w-full border-separate border-spacing-y-3'>
         <thead>
-        <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
+          <tr>{headers.map(h=><th key={h} className='text-left'>{h}</th>)}</tr>
         </thead>
         <tbody>
-        {sections.map(sec => (
-            <tr key={sec.id} className="hover:bg-gray-50">
-              <td className="p-2">{sec.sectionNo || sec.id}</td>
-              <td className="p-2">{sec.year}</td>
-              <td className="p-2">{sec.semester}</td>
-              <td className="p-2">{sec.courseId}</td>
-              <td className="p-2">{sec.section}</td>
-              <td className="p-2">{sec.title}</td>
-              <td className="p-2">{sec.building}</td>
-              <td className="p-2">{sec.room}</td>
-              <td className="p-2">{sec.times}</td>
-              <td className="p-2">{sec.instructor}</td>
-              <td className="p-2"><button onClick={() => confirmAdd(sec)}>Add</button></td>
+          {sections.map(sec=>(
+            <tr key={sec.id} className='hover:bg-gray-50'>
+              {[sec.sectionNo,sec.year,sec.semester,sec.courseId,sec.section,sec.title,sec.building,sec.room,sec.times,sec.instructor]
+                .map((td,i)=><td key={i}>{td}</td>)}
+              <td>
+                <button
+                  className='border-2 border-indigo-600 text-indigo-600 rounded-lg px-4 py-2 hover:bg-indigo-50'
+                  onClick={()=>confirmAdd(sec)}>
+                  Add Course
+                </button>
+              </td>
             </tr>
         ))}
         </tbody>
