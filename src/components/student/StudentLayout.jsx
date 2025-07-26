@@ -25,7 +25,6 @@ const StudentLayout = ({ logout }) => (
 const StudentHome = () => (
   <div className='text-center'>
     <h1 className='text-3xl font-bold'>Welcome, Student!</h1>
-    <p>Select an option above to get started.</p>
   </div>
 );
 
