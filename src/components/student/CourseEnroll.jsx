@@ -5,111 +5,142 @@ import { REGISTRAR_URL } from '../../Constants';
 import Messages from '../Messages';
 import SelectTerm from "../SelectTerm";
 
-const CourseEnroll = (props) => {
-
-  // student adds a course to their schedule
+const CourseEnroll = () => {
   const [year, setYear] = useState('');
   const [semester, setSemester] = useState('');
   const [sections, setSections] = useState([]);
   const [message, setMessage] = useState('');
 
-  const fetchSections = async () => {
-    // get list of open sections for enrollment
-    try {
-      const response = await fetch(`${REGISTRAR_URL}/open?year=${year}&semester=${semester}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': sessionStorage.getItem('jwt'),
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setSections(data);
-        setMessage('');
-      } else {
-        const body = await response.json();
-        setMessage(body);
-      }
-    } catch (err) {
-      setMessage(err);
+  // For debugging, see the data from backend
+  useEffect(() => {
+    if (sections && sections.length > 0) {
+      console.log("Sections received from backend:", sections);
     }
-  }
+  }, [sections]);
+
+  const handleGetSections = ({ year, semester }) => {
+    setYear(year);
+    setSemester(semester);
+  };
 
   useEffect(() => {
-    fetchSections();
-  }, []);
+    if (!year || !semester) return;
+    (async () => {
+      try {
+        const res = await fetch(
+          `${REGISTRAR_URL}/sections/open?year=${year}&semester=${semester}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': sessionStorage.getItem('jwt'),
+            },
+          }
+        );
+        if (!res.ok) throw await res.json();
+        const data = await res.json();
+        setSections(data);
+        setMessage('');
+      } catch (e) {
+        setMessage(e.message || JSON.stringify(e));
+      }
+    })();
+  }, [year, semester]);
 
-  const enroll = async (sectionId) => {
+  const enroll = async (secNo) => {
+    if (!secNo) {
+    setMessage('Section number missing.');
+    return;
+   }
+   console.log('Enrolling in section:', secNo);
+
     try {
-      const res = await fetch(`${REGISTRAR_URL}/studentSchedule`, {
+      const res = await fetch(`${REGISTRAR_URL}/enrollments/sections/${secNo}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': sessionStorage.getItem('jwt'),
         },
-        body: JSON.stringify({ sectionId }),
+ //       body: JSON.stringify({ secNo }),
       });
-      if (res.ok) {
-        setMessage('Course added successfully');
-        fetchSections();
-      } else {
-        setMessage('Error adding course: ' + res.status);
-      }
-    } catch (err) {
-      setMessage('Network error: ' + err);
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      setMessage('Course added successfully');
+      // re-fetch
+      setYear(year); 
+      setSemester(semester);
+    } catch (e) {
+      setMessage(e.message);
     }
   };
 
-  const confirmAdd = (sec) => {
-    confirmAlert({
-      title: 'Confirm to add',
-      message: `Are you sure you want to add ${sec.courseId} - ${sec.title}?`,
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => enroll(sec.id),
-        },
-        {
-          label: 'No',
-        },
-      ],
-    });
-  };
+const confirmAdd = (sec) => {
+  if (!sec.secNo) {
+    setMessage('Section number is missing. Cannot enroll.');
+    return;
+  }
+  confirmAlert({
+    title: 'Confirm to add',
+    message: `Add ${sec.courseId} (sec ${sec.sectionId})?`,
+    buttons: [
+      { label: 'Yes', onClick: () => enroll(sec.secNo) },
+      { label: 'No' }
+    ]
+  });
+};
 
-  const headers = ['section No', 'year', 'semester', 'course Id', 'section', 'title', 'building', 'room', 'times', 'instructor', ''];
+  const headers = [
+    'Section No', 'Year', 'Semester', 'Course ID', 'Sec ID',
+    'Title', 'Building', 'Room', 'Times', 'Instructor', ''
+  ];
 
   return (
-    <div className= "p-6 singleCol">
+    <div className="p-6 w-full">
+      <h3 className="text-2xl font-bold mb-4 text-center">
+        Open Sections Available for Enrollment
+      </h3>
+      <SelectTerm 
+        buttonText="Get Sections" 
+        onClick={handleGetSections} 
+      />
       <Messages response={message} />
-      <h3 className="text-2xl font-bold mb-4">Open Sections Available for Enrollment</h3>
-      <SelectTerm onTermSelect={({ year, semester }) => { setYear(year); setSemester(semester); }} />
-      <Messages response={message} />
-      <table>
-        <thead>
-        <tr>{headers.map(h => <th key={h}>{h}</th>)}</tr>
-        </thead>
-        <tbody>
-        {sections.map(sec => (
-            <tr key={sec.id} className="hover:bg-gray-50">
-              <td className="p-2">{sec.sectionNo || sec.id}</td>
-              <td className="p-2">{sec.year}</td>
-              <td className="p-2">{sec.semester}</td>
-              <td className="p-2">{sec.courseId}</td>
-              <td className="p-2">{sec.section}</td>
-              <td className="p-2">{sec.title}</td>
-              <td className="p-2">{sec.building}</td>
-              <td className="p-2">{sec.room}</td>
-              <td className="p-2">{sec.times}</td>
-              <td className="p-2">{sec.instructor}</td>
-              <td className="p-2"><button onClick={() => confirmAdd(sec)}>Add</button></td>
-            </tr>
-        ))}
-        </tbody>
-      </table>
 
+      <div className="overflow-x-auto">
+        <table className="w-full border border-blue-200 text-left">
+          <thead className="bg-blue-100">
+            <tr>
+              {headers.map(h => (
+                <th key={h} className="px-4 py-2 text-left whitespace-nowrap">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sections.map(sec => (
+              <tr 
+                key={sec.secNo ? sec.secNo : `${sec.courseId}-${sec.sectionId}-${sec.building}`}
+                className="hover:bg-gray-50 text-left"
+              >
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.secNo}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.year}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.semester}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.courseId}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.secId}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.title}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.building}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.room}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.times}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">{sec.instructorName}</td>
+                <td className="px-4 py-2 min-w-[70px] text-left">
+                  <button 
+                    className="bg-amber-300 rounded-lg px-4 py-2 hover:bg-amber-400"
+                    onClick={() => confirmAdd(sec)}
+                  >
+                    Add
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

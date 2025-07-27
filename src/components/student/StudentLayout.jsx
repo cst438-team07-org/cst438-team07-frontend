@@ -24,7 +24,7 @@ const StudentLayout = ({ logout }) => (
 
 const StudentHome = () => (
   <div className='text-center'>
-    <h1 className='text-3xl font-bold'>Welcome, Student!</h1>
+    <h1 className="text-2xl font-bold mb-4 text-center">Welcome Student!</h1>
   </div>
 );
 

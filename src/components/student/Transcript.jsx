@@ -36,13 +36,22 @@ const Transcript = () => {
     fetchData();
   }, []);
 
+  const studentId = courses.length > 0 ? courses[0].studentId : '';
+  const studentName = courses.length > 0 ? courses[0].name : '';
+
   const headers = ['Year', 'Semester', 'CourseId', 'Section', 'Title', 'Credits', 'Grade'];
 
   return (
-    <div className="p-6 singleCol">
-      <h3 className="text-2xl font-bold mb-4">Transcript</h3>
+    <div className="overflow-x-auto">
+      <h3 className="text-2xl font-bold mb-4 text-center">Transcript</h3>
+      {studentId && studentName && (
+        <div className="text-center mb-4">
+          <div>Student id : {studentId}</div>
+          <div>Student name : {studentName}</div>
+        </div>
+      )}
       <Messages response={message} />
-      <table className="bg-white shadow-md rounded-lg overflow-hidden w-full">
+      <table className="w-full border border-blue-200 text-left">
         <thead>
         <tr className="bg-blue-100">{headers.map(h => <th key={h}>{h}</th>)}</tr>
         </thead>
@@ -52,7 +61,7 @@ const Transcript = () => {
               <td className="p-2">{c.year}</td>
               <td className="p-2">{c.semester}</td>
               <td className="p-2">{c.courseId}</td>
-              <td className="p-2">{c.section}</td>
+              <td className="p-2">{c.sectionId || c.sectionNo || ''}</td>
               <td className="p-2">{c.title}</td>
               <td className="p-2">{c.credits}</td>
               <td className="p-2">{c.grade}</td>
