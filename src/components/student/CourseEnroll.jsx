@@ -78,10 +78,10 @@ const confirmAdd = (sec) => {
     return;
   }
   confirmAlert({
-    title: 'Confirm to add',
-    message: `Add ${sec.courseId} (sec ${sec.sectionId})?`,
+    title: 'Confirm to ',
+    message: `add ${sec.courseId} (sec ${sec.secNo || sec.sectionNo} )?`,
     buttons: [
-      { label: 'Yes', onClick: () => enroll(sec.secNo) },
+      { label: 'Yes', onClick: () => enroll(sec.secNo || sec.sectionNo) },
       { label: 'No' }
     ]
   });

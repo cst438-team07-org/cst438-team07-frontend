@@ -57,10 +57,10 @@ const ScheduleView = () => {
 
   const confirmDrop = (e) => {
     confirmAlert({
-      title: 'Confirm to drop',
-      message: `Drop ${e.courseId} (sec ${e.secId})?`,
+      title: 'Confirm to ',
+      message: `drop ${e.courseId} (sec ${e.secId || e.sectionId || e.sectionNo || e.secNo})?`,
       buttons: [
-        { label: 'Yes', onClick: () => drop(e.enrollmentId) },
+        { label: 'Yes', onClick: () => drop(e.enrollmentId || e.sectionId || e.sectionNo || e.secNo) },
         { label: 'No' }
       ]
     });
