@@ -8,15 +8,48 @@ const AssignmentAdd = ({ onClose, secNo }) => {
   const [assignment, setAssignment] = useState({ title: '', dueDate: '' });
   const dialogRef = useRef();
 
+  
   /*
    *  dialog for add assignment
    */
   const editOpen = () => {
     setMessage('');
     setAssignment({ ...assignment, secNo: secNo, title: '', dueDate: '' });
-    // to be implemented.  invoke showModal() method on the dialog element.
-    // dialogRef.current.showModal();
+    dialogRef.current.showModal();
   };
+
+  // method to close dialog box
+  const dialogClose = () => {
+    dialogRef.current.close();
+    onClose();
+  };
+
+  // method to keep have the textboxes update as you type
+  const editChange = (event) => {
+    setAssignment({ ...assignment, [event.target.name]: event.target.value });
+  };
+
+  // when clicking save, the contents entered in the box should be sent over to the backend
+  const onSave = async () => {
+    try {
+      const response = await fetch(`${GRADEBOOK_URL}/assignments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": sessionStorage.getItem("jwt"),
+        },
+        body: JSON.stringify(assignment),
+      });
+      if (response.ok) {
+        setMessage("assignment added");
+      } else {
+        const body = await response.json();
+        setMessage(body);
+      }
+    } catch (err) {
+      setMessage(err);
+    }
+  }
 
   return (
     <>
@@ -24,7 +57,21 @@ const AssignmentAdd = ({ onClose, secNo }) => {
       <dialog ref={dialogRef} >
         <h2>Add Assignment</h2>
         <Messages response={message} />
-        <p>To be implemented. Prompt for title, due. With buttons for Close and Save.</p>
+        <input
+          type="text"
+          name="title"
+          placeholder="title"
+          value={assignment.title}
+          onChange={editChange}
+        />
+        <input
+          type="date"
+          name="dueDate"
+          value={assignment.dueDate}
+          onChange={editChange}
+        />
+        <button onClick={dialogClose}>Close</button>
+        <button onClick={onSave}>Save</button>
       </dialog>
     </>
   )
