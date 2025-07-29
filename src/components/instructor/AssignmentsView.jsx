@@ -1,35 +1,29 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom'
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { useLocation } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 import { GRADEBOOK_URL } from '../../Constants';
 import AssignmentAdd from './AssignmentAdd';
 import AssignmentUpdate from './AssignmentUpdate';
 import AssignmentGrade from './AssignmentGrade';
 import Messages from '../Messages';
 
-
 const AssignmentsView = () => {
-
   const [assignments, setAssignments] = useState([]);
   const [message, setMessage] = useState('');
 
   const location = useLocation();
   const { secNo, courseId, secId } = location.state;
 
-
   const fetchAssignments = async () => {
-
     try {
-      const response = await fetch(`${GRADEBOOK_URL}/sections/${secNo}/assignments`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': sessionStorage.getItem("jwt"),
-          },
-        }
-      );
+      const response = await fetch(`${GRADEBOOK_URL}/sections/${secNo}/assignments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': sessionStorage.getItem("jwt"),
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         setAssignments(data);
@@ -38,12 +32,12 @@ const AssignmentsView = () => {
         setMessage(body);
       }
     } catch (err) {
-      setMessage(err);
+      setMessage(err.message);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchAssignments()
+    fetchAssignments();
   }, []);
 
   const handleDelete = (id) => {
@@ -79,8 +73,6 @@ const AssignmentsView = () => {
       ]
     });
   };
-
-
 
   const headers = ['id', 'Title', 'Due Date', '', '', ''];
 
@@ -120,6 +112,14 @@ const AssignmentsView = () => {
                     Delete
                   </button>
                 </td>
+                <td className="p-2 border">
+                  <button
+                      onClick={() => setGradingAssignment(a)}
+                      className="bg-green-500 text-white px-2 py-1 rounded"
+                  >
+                    Grade
+                  </button>
+                </td>
               </tr>
           ))}
           </tbody>
@@ -128,8 +128,10 @@ const AssignmentsView = () => {
         <div className="mt-6">
           <AssignmentAdd secNo={secNo} onClose={fetchAssignments} />
         </div>
+
       </div>
   );
 };
 
 export default AssignmentsView;
+pu

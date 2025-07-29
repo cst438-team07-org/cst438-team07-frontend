@@ -3,17 +3,16 @@ import { GRADEBOOK_URL } from '../../Constants';
 import Messages from '../Messages';
 
 const AssignmentGrade = ({ assignment }) => {
-
   const [message, setMessage] = useState('');
   const [grades, setGrades] = useState([]);
   const dialogRef = useRef();
-
 
   const gradeOpen = () => {
     setMessage('');
     setGrades([]);
     fetchGrades(assignment.id);
     // to be implemented.  invoke showModal() method on the dialog element.
+
     dialogRef.current.showModal();
   };
 
@@ -24,22 +23,23 @@ const AssignmentGrade = ({ assignment }) => {
 
   const fetchGrades = async (assignmentId) => {
     try {
-      const response = await fetch(`${GRADEBOOK_URL}/assignments/${assignmentId}/grades`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': sessionStorage.getItem('jwt'),
-          },
-        }
-      );
+      const response = await fetch(`${GRADEBOOK_URL}/assignments/${assignmentId}/grades`, {
+        method: 'GET',
+        headers: {
+          'Authorization': sessionStorage.getItem('jwt'),
+        },
+      });
+
       const data = await response.json();
+
       if (response.ok) {
-        setGrades(data);
+        // Add a localScore field to each grade for editing
+        setGrades(data.map(grade => ({ ...grade, localScore: grade.score })));
       } else {
         setMessage(data);
       }
     } catch (err) {
-      setMessage(err);
+      setMessage(err.toString());
     }
   }
 
@@ -66,7 +66,30 @@ const AssignmentGrade = ({ assignment }) => {
 
 
 
-  const headers = ['gradeId', 'student name', 'student email', 'score'];
+  const handleScoreChange = (index, newScore) => {
+    const updatedGrades = [...grades];
+    updatedGrades[index].localScore = newScore;
+    setGrades(updatedGrades);
+  };
+
+  const handleSave = async () => {
+    try {
+      for (const grade of grades) {
+        await fetch(`${GRADEBOOK_URL}/grades/${grade.gradeId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': sessionStorage.getItem('jwt'),
+          },
+          body: JSON.stringify({ score: grade.localScore }),
+        });
+      }
+      setMessage('Grades saved successfully.');
+      editClose();
+    } catch (err) {
+      setMessage(err.toString());
+    }
+  };
 
   return (
     <>
@@ -104,7 +127,8 @@ const AssignmentGrade = ({ assignment }) => {
 
       </dialog>
     </>
+
   );
-}
+};
 
 export default AssignmentGrade;
