@@ -1,37 +1,96 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GRADEBOOK_URL } from '../../Constants';
 import Messages from '../Messages';
 
 const AssignmentUpdate = ({ editAssignment, onClose }) => {
-
-
   const [message, setMessage] = useState('');
   const [assignment, setAssignment] = useState({});
   const dialogRef = useRef();
 
-  /*
-   *  dialog for edit of an assignment
-   */
-  const editOpen = () => {
-    setMessage('');
-    setAssignment(editAssignment);
-    // to be implemented.  invoke showModal() method on the dialog element.
-    // dialogRef.current.showModal();
+  useEffect(() => {
+    if (editAssignment) {
+      setAssignment(editAssignment);
+      dialogRef.current?.showModal();
+    }
+  }, [editAssignment]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAssignment(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`${GRADEBOOK_URL}/assignments/${assignment.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': sessionStorage.getItem("jwt"),
+        },
+        body: JSON.stringify(assignment),
+      });
 
+      if (response.ok) {
+        setMessage("Assignment updated successfully.");
+        dialogRef.current.close();
+        onClose(); // refresh list and close modal
+      } else {
+        const body = await response.json();
+        setMessage(body.message || "Update failed.");
+      }
+    } catch (err) {
+      setMessage(err.message);
+    }
+  };
+
+  const handleClose = () => {
+    dialogRef.current.close();
+    onClose();
+  };
 
   return (
-    <>
-      <button onClick={editOpen}>Edit</button>
-      <dialog ref={dialogRef} >
-        <p>To be implemented.  Show the id, title and due date of the assignemnt.
-          Allow user to edit the title and due date.
-          Buttons for Close and Save.
-        </p>
-      </dialog>
-    </>
-  )
-}
+      <>
+        <dialog ref={dialogRef}>
+          <div className="p-4 w-96">
+            <h3 className="text-lg font-bold mb-4">Edit Assignment</h3>
+            <Messages response={message} />
+
+            <div className="mb-2">
+              <label>ID: </label>
+              <span>{assignment.id}</span>
+            </div>
+
+            <div className="mb-2">
+              <label>Title:</label><br />
+              <input
+                  type="text"
+                  name="title"
+                  value={assignment.title || ''}
+                  onChange={handleChange}
+                  className="border p-1 w-full"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label>Due Date:</label><br />
+              <input
+                  type="date"
+                  name="dueDate"
+                  value={assignment.dueDate || ''}
+                  onChange={handleChange}
+                  className="border p-1 w-full"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button onClick={handleSave} className="bg-blue-500 text-white px-3 py-1 rounded">Save</button>
+              <button onClick={handleClose} className="bg-gray-400 text-white px-3 py-1 rounded">Close</button>
+            </div>
+          </div>
+        </dialog>
+      </>
+  );
+};
 
 export default AssignmentUpdate;
+
