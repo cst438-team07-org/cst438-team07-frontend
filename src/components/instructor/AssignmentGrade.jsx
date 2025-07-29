@@ -8,12 +8,10 @@ const AssignmentGrade = ({ assignment }) => {
   const [grades, setGrades] = useState([]);
   const dialogRef = useRef();
 
-
   const gradeOpen = () => {
     setMessage('');
     setGrades([]);
     fetchGrades(assignment.id);
-    // to be implemented.  invoke showModal() method on the dialog element.
     dialogRef.current.showModal();
   };
 
@@ -65,45 +63,54 @@ const AssignmentGrade = ({ assignment }) => {
   }
 
 
+  // Function just in case we need to handle score changes
+  const handleScoreChange = (index, newScore) => {
+    const updatedGrades = [...grades];
+    updatedGrades[index].localScore = newScore;
+    setGrades(updatedGrades);
+  };
+
 
   const headers = ['gradeId', 'student name', 'student email', 'score'];
 
+
   return (
-      <>
-        <button id="gradeButton" onClick={gradeOpen}>Grade</button>
-        <dialog ref={dialogRef}>
-          <h3>Grade Assignment</h3>
-          <Messages response={message} />
-          <table className="Center">
-            <thead>
-            <tr>
-              {headers.map((s, idx) => (
-                  <th key={idx}>{s}</th>
-              ))}
-            </tr>
-            </thead>
-            <tbody>
-            {grades.map((g) => (
-                <tr key={g.gradeId}>
-                  <td>{g.gradeId}</td>
-                  <td>{g.studentName}</td>
-                  <td>{g.studentEmail}</td>
-                  <td><input type="number" name="score" value={g.score === null ? "" : g.score} onChange={(event) => {
-                    const newGrades = grades.map(grade =>
-                        grade.gradeId === g.gradeId ? { ...grade, score: event.target.value } : grade
-                    );
-                    setGrades(newGrades);
-                  }} /></td>
-                </tr>
+    <>
+      <button id="gradeButton" onClick={gradeOpen}>Grade</button>
+      <dialog ref={dialogRef}>
+        <h3>Grade Assignment</h3>
+        <Messages response={message} />
+        <table className="Center">
+          <thead>
+          <tr>
+            {headers.map((s, idx) => (
+              <th key={idx}>{s}</th>
             ))}
-            </tbody>
+          </tr>
+        </thead>
+        <tbody>
+          {grades.map((g) => (
+            <tr key={g.gradeId}>
+              <td>{g.gradeId}</td>
+              <td>{g.studentName}</td>
+              <td>{g.studentEmail}</td>
+              <td><input type="number" name="score" value={g.score === null ? "" : g.score} onChange={(event) => {
+                const newGrades = grades.map(grade => 
+                  grade.gradeId === g.gradeId ? { ...grade, score: event.target.value } : grade
+                );
+                setGrades(newGrades);
+              }} /></td>
+            </tr>
+          ))}
+        </tbody>
+          
+        </table>
+        <button onClick={gradeClose}>Close</button>
+        <button onClick={onSave}>Save</button>
 
-          </table>
-          <button onClick={gradeClose}>Close</button>
-          <button onClick={onSave}>Save</button>
+      </dialog>
+    </>
 
-        </dialog>
-      </>
   );
 }
 

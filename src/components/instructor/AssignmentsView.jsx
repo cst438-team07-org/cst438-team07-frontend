@@ -13,7 +13,6 @@ const AssignmentsView = () => {
 
   const [assignments, setAssignments] = useState([]);
   const [message, setMessage] = useState('');
-  const [editingAssignment, setEditingAssignment] = useState(null);
 
   const location = useLocation();
   const { secNo, courseId, secId } = location.state;
@@ -129,17 +128,6 @@ const AssignmentsView = () => {
           <AssignmentAdd secNo={secNo} onClose={fetchAssignments} />
         </div>
 
-        {editingAssignment && (
-            <div className="mt-4">
-              <AssignmentUpdate
-                  assignment={editingAssignment}
-                  onClose={() => {
-                    setEditingAssignment(null);
-                    fetchAssignments();
-                  }}
-              />
-            </div>
-        )}
       </div>
   );
 };
