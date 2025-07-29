@@ -27,8 +27,21 @@ const InstructorLayout = () => {
   return (
     <>
       <nav>
-        <Link id="homeLink" to="/">Home</Link>&nbsp;|&nbsp;
-        <Link id="logoutLink" to="/logout">Logout</Link>
+        <Link
+          id="homeLink"
+          to="/"
+          className="hover:text-blue-600"
+        >
+          Home
+        </Link>
+        &nbsp;|&nbsp;
+        <Link
+          id="logoutLink"
+          to="/logout"
+          className="hover:text-red-600"
+        >
+          Logout
+        </Link>
       </nav>
       <h1>Instructor Home</h1>
       Manage assignments and grades.
