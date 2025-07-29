@@ -3,6 +3,10 @@ button {
   @apply bg-amber-300 text-black rounded-lg p-2 hover:bg-amber-400 w-24 justify-center justify-self-center;
 }
 
+h3 {
+  @apply text-4xl font-bold mb-4;
+}
+
 input {
   @apply border-2 border-blue-400 rounded-lg p-1;
 }
