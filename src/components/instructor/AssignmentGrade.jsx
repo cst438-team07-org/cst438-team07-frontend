@@ -8,28 +8,27 @@ const AssignmentGrade = ({ assignment }) => {
   const [grades, setGrades] = useState([]);
   const dialogRef = useRef();
 
-
-  const editOpen = () => {
+  const gradeOpen = () => {
     setMessage('');
     setGrades([]);
     fetchGrades(assignment.id);
-    // to be implemented.  invoke showModal() method on the dialog element.
-    // dialogRef.current.showModal();
+    dialogRef.current.showModal();
   };
 
-  const editClose = () => {
+  const gradeClose = () => {
     dialogRef.current.close();
   };
+
 
   const fetchGrades = async (assignmentId) => {
     try {
       const response = await fetch(`${GRADEBOOK_URL}/assignments/${assignmentId}/grades`,
-        {
-          method: 'GET',
-          headers: {
-            'Authorization': sessionStorage.getItem('jwt'),
-          },
-        }
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': sessionStorage.getItem('jwt'),
+            },
+          }
       );
       const data = await response.json();
       if (response.ok) {
@@ -42,21 +41,76 @@ const AssignmentGrade = ({ assignment }) => {
     }
   }
 
+  const onSave = async () => {
+    try {
+      const response = await fetch(`${GRADEBOOK_URL}/grades`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": sessionStorage.getItem("jwt"),
+        },
+        body: JSON.stringify(grades),
+      });
+      if (response.ok) {
+        setMessage("Grades saved");
+      } else {
+        const body = await response.json();
+        setMessage(body);
+      }
+    } catch (err) {
+      setMessage(err);
+    }
+  }
+
+
+  // Function just in case we need to handle score changes
+  const handleScoreChange = (index, newScore) => {
+    const updatedGrades = [...grades];
+    updatedGrades[index].localScore = newScore;
+    setGrades(updatedGrades);
+  };
 
 
   const headers = ['gradeId', 'student name', 'student email', 'score'];
 
+
   return (
     <>
-      <button id="gradeButton" onClick={editOpen}>Grade</button>
+      <button id="gradeButton" onClick={gradeOpen}>Grade</button>
       <dialog ref={dialogRef}>
-        <p>To be implemented.  Display table with columns headings as given in headers.
-          For each student, display and allow the user to edit the student's score.
-          Buttons for Close and Save.
-        </p>
+        <h3>Grade Assignment</h3>
+        <Messages response={message} />
+        <table className="Center">
+          <thead>
+          <tr>
+            {headers.map((s, idx) => (
+              <th key={idx}>{s}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {grades.map((g) => (
+            <tr key={g.gradeId}>
+              <td>{g.gradeId}</td>
+              <td>{g.studentName}</td>
+              <td>{g.studentEmail}</td>
+              <td><input type="number" name="score" value={g.score === null ? "" : g.score} onChange={(event) => {
+                const newGrades = grades.map(grade => 
+                  grade.gradeId === g.gradeId ? { ...grade, score: event.target.value } : grade
+                );
+                setGrades(newGrades);
+              }} /></td>
+            </tr>
+          ))}
+        </tbody>
+          
+        </table>
+        <button onClick={gradeClose}>Close</button>
+        <button onClick={onSave}>Save</button>
 
       </dialog>
     </>
+
   );
 }
 
