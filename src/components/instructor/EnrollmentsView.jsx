@@ -25,7 +25,6 @@ const EnrollmentsView = () => {
       if (response.ok) {
         const data = await response.json();
         setEnrollments(data);
-        //console.log("API response: " + JSON.stringify(data));
       } else {
         const body = await response.json();
         setMessage(body);
