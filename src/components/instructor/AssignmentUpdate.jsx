@@ -32,8 +32,6 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
 
       if (response.ok) {
         setMessage("Assignment updated successfully.");
-        // dialogRef.current.close();
-        // onClose(); // refresh list and close modal
       } else {
         const body = await response.json();
         setMessage(body.message || "Update failed.");
