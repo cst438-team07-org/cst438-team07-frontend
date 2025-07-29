@@ -105,6 +105,9 @@ const AssignmentsView = () => {
                 <td className="p-2 border">{a.title}</td>
                 <td className="p-2 border">{a.dueDate}</td>
                 <td className="p-2 border">
+                  <AssignmentGrade assignment={a} onClose={fetchAssignments}/>
+                </td>
+                <td className="p-2 border">
                   <button
                       onClick={() => setEditingAssignment(a)}
                       className="bg-blue-500 text-white px-2 py-1 rounded"
