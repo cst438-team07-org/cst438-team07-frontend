@@ -7,12 +7,12 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
   const [assignment, setAssignment] = useState({});
   const dialogRef = useRef();
 
-  useEffect(() => {
-    if (editAssignment) {
-      setAssignment(editAssignment);
-      dialogRef.current?.showModal();
-    }
-  }, [editAssignment]);
+  const editOpen = () => {
+    setMessage('');
+    setAssignment(editAssignment);
+    // Open the dialog for editing assignment
+    dialogRef.current.showModal();
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +21,7 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`${GRADEBOOK_URL}/assignments/${assignment.id}`, {
+      const response = await fetch(`${GRADEBOOK_URL}/assignments`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -32,8 +32,8 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
 
       if (response.ok) {
         setMessage("Assignment updated successfully.");
-        dialogRef.current.close();
-        onClose(); // refresh list and close modal
+        // dialogRef.current.close();
+        // onClose(); // refresh list and close modal
       } else {
         const body = await response.json();
         setMessage(body.message || "Update failed.");
@@ -50,6 +50,7 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
 
   return (
       <>
+      <button onClick={editOpen}>Edit</button>
         <dialog ref={dialogRef}>
           <div className="p-4 w-96">
             <h3 className="text-lg font-bold mb-4">Edit Assignment</h3>
@@ -83,8 +84,8 @@ const AssignmentUpdate = ({ editAssignment, onClose }) => {
             </div>
 
             <div className="flex justify-end gap-2">
-              <button onClick={handleSave} className="bg-blue-500 text-white px-3 py-1 rounded">Save</button>
               <button onClick={handleClose} className="bg-gray-400 text-white px-3 py-1 rounded">Close</button>
+              <button onClick={handleSave} className="bg-blue-500 text-white px-3 py-1 rounded">Save</button>
             </div>
           </div>
         </dialog>

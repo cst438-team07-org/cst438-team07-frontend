@@ -13,7 +13,6 @@ const AssignmentsView = () => {
 
   const [assignments, setAssignments] = useState([]);
   const [message, setMessage] = useState('');
-  const [editingAssignment, setEditingAssignment] = useState(null);
 
   const location = useLocation();
   const { secNo, courseId, secId } = location.state;
@@ -108,12 +107,10 @@ const AssignmentsView = () => {
                   <AssignmentGrade assignment={a} onClose={fetchAssignments}/>
                 </td>
                 <td className="p-2 border">
-                  <button
-                      onClick={() => setEditingAssignment(a)}
-                      className="bg-blue-500 text-white px-2 py-1 rounded"
-                  >
-                    Edit
-                  </button>
+                  <AssignmentUpdate
+                      editAssignment={a}
+                      onClose={fetchAssignments}
+                  />
                 </td>
                 <td className="p-2 border">
                   <button
@@ -131,18 +128,6 @@ const AssignmentsView = () => {
         <div className="mt-6">
           <AssignmentAdd secNo={secNo} onClose={fetchAssignments} />
         </div>
-
-        {editingAssignment && (
-            <div className="mt-4">
-              <AssignmentUpdate
-                  assignment={editingAssignment}
-                  onClose={() => {
-                    setEditingAssignment(null);
-                    fetchAssignments();
-                  }}
-              />
-            </div>
-        )}
       </div>
   );
 };
