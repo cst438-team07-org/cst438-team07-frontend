@@ -107,4 +107,4 @@ const AssignmentGrade = ({ assignment }) => {
   );
 }
 
-export default Assignmen
+export default AssignmentGrade;
