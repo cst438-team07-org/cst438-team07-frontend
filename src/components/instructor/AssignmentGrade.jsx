@@ -11,8 +11,6 @@ const AssignmentGrade = ({ assignment }) => {
     setMessage('');
     setGrades([]);
     fetchGrades(assignment.id);
-    // to be implemented.  invoke showModal() method on the dialog element.
-
     dialogRef.current.showModal();
   };
 
@@ -90,6 +88,9 @@ const AssignmentGrade = ({ assignment }) => {
       setMessage(err.toString());
     }
   };
+
+  const headers = ['gradeId', 'student name', 'student email', 'score'];
+
 
   return (
     <>

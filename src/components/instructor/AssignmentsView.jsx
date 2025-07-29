@@ -112,14 +112,6 @@ const AssignmentsView = () => {
                     Delete
                   </button>
                 </td>
-                <td className="p-2 border">
-                  <button
-                      onClick={() => setGradingAssignment(a)}
-                      className="bg-green-500 text-white px-2 py-1 rounded"
-                  >
-                    Grade
-                  </button>
-                </td>
               </tr>
           ))}
           </tbody>
@@ -134,4 +126,3 @@ const AssignmentsView = () => {
 };
 
 export default AssignmentsView;
-pu
