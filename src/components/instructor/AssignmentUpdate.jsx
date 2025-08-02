@@ -1,95 +1,70 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { GRADEBOOK_URL } from '../../Constants';
 import Messages from '../Messages';
 
 const AssignmentUpdate = ({ editAssignment, onClose }) => {
+
+
   const [message, setMessage] = useState('');
   const [assignment, setAssignment] = useState({});
   const dialogRef = useRef();
 
+  /*
+   *  dialog for edit of an assignment
+   */
   const editOpen = () => {
     setMessage('');
     setAssignment(editAssignment);
-    // Open the dialog for editing assignment
     dialogRef.current.showModal();
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setAssignment(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch(`${GRADEBOOK_URL}/assignments`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': sessionStorage.getItem("jwt"),
-        },
-        body: JSON.stringify(assignment),
-      });
-
-      if (response.ok) {
-        setMessage("Assignment updated successfully.");
-      } else {
-        const body = await response.json();
-        setMessage(body.message || "Update failed.");
-      }
-    } catch (err) {
-      setMessage(err.message);
-    }
-  };
-
-  const handleClose = () => {
+  const editClose = () => {
     dialogRef.current.close();
     onClose();
   };
 
+  const editChange = (event) => {
+    setAssignment({ ...assignment, [event.target.name]: event.target.value })
+  }
+
+  const save = async () => {
+    try {
+      const response = await fetch(`${GRADEBOOK_URL}/assignments`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': sessionStorage.getItem('jwt'),
+          },
+          body: JSON.stringify(assignment),
+        });
+      if (response.ok) {
+        const body = await response.json();
+        setMessage("assignment updated");
+      } else {
+        const body = await response.json();
+        setMessage(body);
+      }
+    } catch (err) {
+      setMessage(err);
+    }
+  }
+
+
   return (
-      <>
+    <>
       <button onClick={editOpen}>Edit</button>
-        <dialog ref={dialogRef}>
-          <div className="p-4 w-96">
-            <h3 className="text-lg font-bold mb-4">Edit Assignment</h3>
-            <Messages response={message} />
-
-            <div className="mb-2">
-              <label>ID: </label>
-              <span>{assignment.id}</span>
-            </div>
-
-            <div className="mb-2">
-              <label>Title:</label><br />
-              <input
-                  type="text"
-                  name="title"
-                  value={assignment.title || ''}
-                  onChange={handleChange}
-                  className="border p-1 w-full"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label>Due Date:</label><br />
-              <input
-                  type="date"
-                  name="dueDate"
-                  value={assignment.dueDate || ''}
-                  onChange={handleChange}
-                  className="border p-1 w-full"
-              />
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <button onClick={handleClose} className="bg-gray-400 text-white px-3 py-1 rounded">Close</button>
-              <button onClick={handleSave} className="bg-blue-500 text-white px-3 py-1 rounded">Save</button>
-            </div>
-          </div>
-        </dialog>
-      </>
-  );
-};
+      <dialog ref={dialogRef} >
+        <h2>Edit Assignment</h2>
+        <Messages response={message} />
+        <input type="text" label="id" name="id" value={assignment.id} readOnly />
+        <input type="text" placeholder="assignment title" label="title" name="title" value={assignment.title} onChange={editChange} />
+        <input type="date" placeholder="due date" label="dueDate" name="dueDate" value={assignment.dueDate} onChange={editChange} />
+        <button onClick={editClose}>Close</button>
+        <button onClick={save}>Save</button>
+      </dialog>
+    </>
+  )
+}
 
 export default AssignmentUpdate;
-

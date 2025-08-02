@@ -14,6 +14,7 @@ const AssignmentsView = () => {
   const [assignments, setAssignments] = useState([]);
   const [message, setMessage] = useState('');
 
+  // get value of state= from the <Link > invoking AssignmentsView
   const location = useLocation();
   const { secNo, courseId, secId } = location.state;
 
@@ -46,88 +47,79 @@ const AssignmentsView = () => {
     fetchAssignments()
   }, []);
 
-  const handleDelete = (id) => {
+
+  const doDelete = async (id) => {
+    try {
+      const response = await fetch(`${GRADEBOOK_URL}/assignments/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': sessionStorage.getItem('jwt'),
+          },
+        })
+      if (response.ok) {
+        setMessage("Assignment deleted");
+        fetchAssignments();
+      } else {
+        const body = await response.json();
+        setMessage(body);
+      }
+    } catch (err) {
+      setMessage(err);
+    }
+  }
+
+  const onDelete = (id) => {
     confirmAlert({
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this assignment?',
+      title: 'Confirm to delete',
+      message: 'Do you really want to delete?',
       buttons: [
         {
           label: 'Yes',
-          onClick: async () => {
-            try {
-              const response = await fetch(`${GRADEBOOK_URL}/assignments/${id}`, {
-                method: 'DELETE',
-                headers: {
-                  'Authorization': sessionStorage.getItem("jwt"),
-                },
-              });
-              if (response.ok) {
-                setMessage("Assignment deleted");
-                fetchAssignments();
-              } else {
-                const body = await response.json();
-                setMessage(body.message || "Error deleting assignment");
-              }
-            } catch (err) {
-              setMessage(err.message);
-            }
-          }
+          onClick: () => doDelete(id)
         },
         {
-          label: 'No'
+          label: 'No',
         }
       ]
     });
-  };
-
-
+  }
 
   const headers = ['id', 'Title', 'Due Date', '', '', ''];
 
   return (
-      <div>
-        <h2>Assignments for {courseId} - Section {secNo}</h2>
-        <Messages response={message} />
-
-        <table className="min-w-full border border-gray-300 mt-4">
-          <thead>
-          <tr className="bg-gray-200">
-            {headers.map((h, index) => (
-                <th key={index} className="p-2 border">{h}</th>
-            ))}
-          </tr>
-          </thead>
-          <tbody>
-          {assignments.map((a) => (
-              <tr key={a.id} className="border-t">
-                <td className="p-2 border">{a.id}</td>
-                <td className="p-2 border">{a.title}</td>
-                <td className="p-2 border">{a.dueDate}</td>
-                <td className="p-2 border">
-                  <AssignmentGrade assignment={a} onClose={fetchAssignments}/>
-                </td>
-                <td className="p-2 border">
-                  <AssignmentUpdate editAssignment={a} onClose={fetchAssignments}/>
-                </td>
-                <td className="p-2 border">
-                  <button
-                      onClick={() => handleDelete(a.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                  >
-                    Delete
-                  </button>
-                </td>
+    <div>
+      <Messages response={message} />
+      {(assignments.length > 0) ?
+        <>
+          <h3>{courseId}-{secId} Assignments</h3>
+          <table className="Center" >
+            <thead>
+              <tr>
+                {headers.map((s, idx) => (<th key={idx}>{s}</th>))}
               </tr>
-          ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {assignments.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.id}</td>
+                  <td>{a.title}</td>
+                  <td>{a.dueDate}</td>
+                  <td><AssignmentGrade assignment={a} /></td>
+                  <td><AssignmentUpdate editAssignment={a} onClose={fetchAssignments} /></td>
+                  <td><button onClick={() => onDelete(a.id)}>Delete</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+        : null
+      }
 
-        <div className="mt-6">
-          <AssignmentAdd secNo={secNo} onClose={fetchAssignments} />
-        </div>
-
-      </div>
+      <AssignmentAdd secNo={secNo} onClose={fetchAssignments} />
+    </div>
   );
-};
+}
 
 export default AssignmentsView;

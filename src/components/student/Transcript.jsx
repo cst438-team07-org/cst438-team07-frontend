@@ -36,42 +36,35 @@ const Transcript = () => {
     fetchData();
   }, []);
 
-  const studentId = courses.length > 0 ? courses[0].studentId : '';
-  const studentName = courses.length > 0 ? courses[0].name : '';
-
   const headers = ['Year', 'Semester', 'CourseId', 'Section', 'Title', 'Credits', 'Grade'];
 
   return (
-    <div className="overflow-x-auto">
-      <h3 className="text-2xl font-bold mb-4 text-center">Transcript</h3>
-      {studentId && studentName && (
-        <div className="text-center mb-4">
-          <div>Student id : {studentId}</div>
-          <div>Student name : {studentName}</div>
-        </div>
-      )}
+    <>
+      <h3>Transcript</h3>
       <Messages response={message} />
-      <table className="w-full border border-blue-200 text-left">
+      {(courses.length > 0) ? (<p>Student id : {courses[0].studentId} <br />  Student name : {courses[0].name} </p>) : ''}
+      <table className="Center" >
         <thead>
-        <tr className="bg-blue-100">{headers.map(h => <th key={h}>{h}</th>)}</tr>
+          <tr>
+            {headers.map((s, idx) => (<th key={idx}>{s}</th>))}
+          </tr>
         </thead>
         <tbody>
-        {courses.map(c => (
-            <tr key={c.enrollmentId || c.courseId} className="hover:bg-gray-50">
-              <td className="p-2">{c.year}</td>
-              <td className="p-2">{c.semester}</td>
-              <td className="p-2">{c.courseId}</td>
-              <td className="p-2">{c.sectionId || c.sectionNo || ''}</td>
-              <td className="p-2">{c.title}</td>
-              <td className="p-2">{c.credits}</td>
-              <td className="p-2">{c.grade}</td>
+          {courses.map((c) => (
+            <tr key={c.enrollmentId}>
+              <td>{c.year}</td>
+              <td>{c.semester}</td>
+              <td>{c.courseId}</td>
+              <td>{c.sectionId}</td>
+              <td>{c.title}</td>
+              <td>{c.credits}</td>
+              <td id="grade">{c.grade}</td>
             </tr>
-        ))}
+          ))}
         </tbody>
       </table>
-
-    </div>
+    </>
   );
-};
+}
 
 export default Transcript;

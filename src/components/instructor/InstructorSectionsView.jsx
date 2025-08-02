@@ -56,24 +56,8 @@ const InstructorSectionsView = () => {
               <td>{s.building}</td>
               <td>{s.room}</td>
               <td>{s.times}</td>
-              <td><Link 
-                    id="enrollmentsLink" 
-                    to="/enrollments" 
-                    state={s}
-                    className="text-blue-600 font-bold underline hover:text-blue-800"
-                  >
-                  Enrollments
-                </Link>
-              </td>
-              <td><Link 
-                    id="assignmentsLink" 
-                    to="/assignments" 
-                    state={s}
-                    className="text-pink-600 font-bold underline hover:text-pink-800"
-                  >
-                  Assignments
-                </Link>
-              </td>
+              <td><Link id="enrollmentsLink" to="/enrollments" state={s}>Enrollments</Link></td>
+              <td><Link id="assignmentsLink" to="/assignments" state={s}>Assignments</Link></td>
             </tr>
           ))}
         </tbody>

@@ -8,7 +8,6 @@ const AssignmentAdd = ({ onClose, secNo }) => {
   const [assignment, setAssignment] = useState({ title: '', dueDate: '' });
   const dialogRef = useRef();
 
-  
   /*
    *  dialog for add assignment
    */
@@ -18,30 +17,29 @@ const AssignmentAdd = ({ onClose, secNo }) => {
     dialogRef.current.showModal();
   };
 
-  // method to close dialog box
-  const dialogClose = () => {
+  const editClose = () => {
     dialogRef.current.close();
     onClose();
   };
 
-  // method to keep have the textboxes update as you type
   const editChange = (event) => {
-    setAssignment({ ...assignment, [event.target.name]: event.target.value });
-  };
+    setAssignment({ ...assignment, [event.target.name]: event.target.value })
+  }
 
-  // when clicking save, the contents entered in the box should be sent over to the backend
-  const onSave = async () => {
+  const add = async () => {
     try {
-      const response = await fetch(`${GRADEBOOK_URL}/assignments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": sessionStorage.getItem("jwt"),
-        },
-        body: JSON.stringify(assignment),
-      });
+      const response = await fetch(`${GRADEBOOK_URL}/assignments`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': sessionStorage.getItem('jwt'),
+          },
+          body: JSON.stringify(assignment),
+        });
       if (response.ok) {
-        setMessage("assignment added");
+        const body = await response.json();
+        setMessage("assignment added. id=" + body.id);
       } else {
         const body = await response.json();
         setMessage(body);
@@ -57,21 +55,10 @@ const AssignmentAdd = ({ onClose, secNo }) => {
       <dialog ref={dialogRef} >
         <h2>Add Assignment</h2>
         <Messages response={message} />
-        <input
-          type="text"
-          name="title"
-          placeholder="title"
-          value={assignment.title}
-          onChange={editChange}
-        />
-        <input
-          type="date"
-          name="dueDate"
-          value={assignment.dueDate}
-          onChange={editChange}
-        />
-        <button onClick={dialogClose}>Close</button>
-        <button onClick={onSave}>Save</button>
+        <input id="title" type="text" label="title" name="title" value={assignment.title} placeholder="assignment title" onChange={editChange} />
+        <input id="dueDate" type="date" label="dueDate" name="dueDate" value={assignment.dueDate} placeholder="due date" onChange={editChange} />
+        <button id="closeAssignmentButton" onClick={editClose}>Close</button>
+        <button id="saveAssignmentButton" onClick={add}>Save</button>
       </dialog>
     </>
   )

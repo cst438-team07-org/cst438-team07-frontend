@@ -37,39 +37,19 @@ const EnrollmentsView = () => {
   useEffect(() => {
     fetchEnrollments()
   }, []);
-  
-  const editChange = (event, enrollmentId) => {
-    // Get the new grade the user typed
-    const newGrade = event.target.value;
-    // Create a new array with the updated grade for the matching enrollment
-    const updatedEnrollments = enrollments.map((enrollment) => {
-      // If this is the enrollment we want to update...
-      if (enrollment.enrollmentId === enrollmentId) {
-        // Return a new object with the updated grade
-        return {
-          ...enrollment,
-          grade: newGrade
-        };
-      }
-      // Otherwise, return the enrollment unchanged
-      return enrollment;
-    });
-    // Update the state with the modified array
-    setEnrollments(updatedEnrollments);
-  };
 
-
-
-  const onSave = async () => {
+  const saveGrades = async () => {
     try {
-      const response = await fetch(`${GRADEBOOK_URL}/enrollments`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": sessionStorage.getItem("jwt"),
-        },
-        body: JSON.stringify(enrollments),
-      });
+      const response = await fetch(
+        `${GRADEBOOK_URL}/enrollments`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': sessionStorage.getItem('jwt'),
+          },
+          body: JSON.stringify(enrollments),
+        });
       if (response.ok) {
         setMessage("Grades saved");
         fetchEnrollments();
@@ -80,8 +60,14 @@ const EnrollmentsView = () => {
     } catch (err) {
       setMessage(err);
     }
-  }  
+  }
 
+  const onGradeChange = (event, idx) => {
+    // make copy of enrollments list.  update row with grade value
+    const copy_enrollments = enrollments.map((x) => x);
+    copy_enrollments[idx] = { ...(copy_enrollments[idx]), grade: event.target.value };
+    setEnrollments(copy_enrollments);
+  }
 
   const headers = ['enrollment id', 'student id', 'name', 'email', 'grade'];
 
@@ -89,31 +75,27 @@ const EnrollmentsView = () => {
     <>
       <h3> {courseId}-{secId} Enrollments</h3>
       <Messages response={message} />
-      <table className="Center">
+      <table className="Center" >
         <thead>
           <tr>
-            {headers.map((s, idx) => (
-              <th key={idx}>{s}</th>
-            ))}
+            {headers.map((s, idx) => (<th key={idx}>{s}</th>))}
           </tr>
         </thead>
         <tbody>
-          {enrollments.map((e) => (
-            <tr key={e.enrollmentId}>
+          {enrollments.map((e, idx) => (
+            <tr key={idx}>
               <td>{e.enrollmentId}</td>
               <td>{e.studentId}</td>
               <td>{e.name}</td>
               <td>{e.email}</td>
-              <td><input type="text" name="grade" placeholder="grade" value={e.grade ?? ""} onChange={(event) => editChange(event, e.enrollmentId)}/></td>
+              <td><input id="grade" type="text" name="grade" value={(e.grade) ? e.grade : ''} onChange={(event) => onGradeChange(event, idx)} /></td>
             </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={onSave}>Save</button>
+      <button id="saveEnrollmentsButton" onClick={saveGrades}>Save Grades</button>
     </>
   );
 }
 
-
-//onChange={editChange}
 export default EnrollmentsView;
